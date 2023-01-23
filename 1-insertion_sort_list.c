@@ -1,34 +1,54 @@
 #include "sort.h"
 
 /**
- * insertion_sort_list - sorts a doubly linked list with insertion sort
- * @list: doubly linked list
+ * swap - swaps 2 nodes in a doubly-linked list
+ * @a: address of first node
+ * @b: address of second node
+ *
+ * Return: void
  */
+void swap(listint_t *a, listint_t *b)
+{
+	if (a->prev)
+		a->prev->next = b;
+	if (b->next)
+		b->next->prev = a;
+	a->next = b->next;
+	b->prev = a->prev;
+	a->prev = b;
+	b->next = a;
 
+}
+
+/**
+ * insertion_sort_list - insertion sorts a doubly-linked list
+ * @list: address of pointer to head node
+ *
+ * Return: void
+ */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *key;
+	listint_t *i, *j;
 
-	if (list == NULL || *list == NULL || (*list)->next == NULL)
+	if (!list || !*list || !(*list)->next)
 		return;
-
-	key = (*list)->next;
-	while (key != NULL)
+	i = (*list)->next;
+	while (i)
 	{
-		while (key->prev != NULL && key->n < key->prev->n)
+		j = i;
+		i = i->next;
+		while (j && j->prev)
 		{
-			key->prev->next = key->next;
-			if (key->next != NULL)
-				key->next->prev = key->prev;
-			key->next = key->prev;
-			key->prev = key->prev->prev;
-			key->next->prev = key;
-			if (key->prev == NULL)
-				*list = key;
+			if (j->prev->n > j->n)
+			{
+				swap(j->prev, j);
+				if (!j->prev)
+					*list = j;
+				print_list((const listint_t *)*list);
+			}
 			else
-				key->prev->next = key;
-			print_list(*list);
+				j = j->prev;
 		}
-		key = key->next;
+
 	}
 }
